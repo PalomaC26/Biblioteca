@@ -12,7 +12,7 @@ const bodyParser = require('body-parser'); // Importa o pacote body-parser para 
 
 const db = require('./config/db');
 
-const livrosRoutes = require('./routes/livros');
+const locacoesRoutes = require('./routes/locacoes');
 //inicializar nova aplicação Express
 
 const app = express(); // Inicializa uma nova aplicação Express
@@ -23,7 +23,7 @@ const app = express(); // Inicializa uma nova aplicação Express
 app.use(cors()); // Habilita o CORS para todas as rotas
 app.use(bodyParser.json()); // Configura o body-parser para analisar requisições JSON
 
-app.use('/locacaodelivros/livros', livrosRoutes);
+app.use('/locacaodelivros/locacoes', locacoesRoutes);
 
 
 //Rota inicial para testar o servidor
