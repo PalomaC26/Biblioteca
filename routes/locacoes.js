@@ -8,6 +8,8 @@ const locacoesController = require('../controllers/locacoesController'); // Impo
 router.get('/',  locacoesController.getAllLocacoes);
 router.post('/',  locacoesController.addLocacoes);
 router.put('/:id', locacoesController.updatelocacoesPut);
+router.patch('/:id', locacoesController.updatelocacoesPatch);
+router.delete('/:id', locacoesController.deletelocacoes);
 
 // Exportando o roteador
 module.exports = router;

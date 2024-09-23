@@ -14,10 +14,10 @@ const getAllLocacoes = (req, res) => {
 
 // Função para adicionar uma nova transação
 const addLocacoes = (req, res) => {
-  const { livro_id, cliente_id, data_locação, data_devolução} = req.body;
+  const { nome_livro, nome_cliente, data_locação, data_devolução} = req.body;
   db.query(
-  'INSERT INTO locações (livro_id, cliente_id, data_locação, data_devolução) VALUES (?,?,?,?)',
-  [livro_id, cliente_id, data_locação, data_devolução],
+  'INSERT INTO locações (nome_livro, nome_cliente, data_locação, data_devolução) VALUES (?,?,?,?)',
+  [nome_livro, nome_cliente, data_locação, data_devolução],
   (err, results) => {
   if (err) {
   console.error('Erro ao adicionar locações:', err);
@@ -30,31 +30,92 @@ const addLocacoes = (req, res) => {
   };
 
 
-// Função para atualizar uma transação existente (substituição completa)
+
+//Função para atualizar uma transação existente (substituição completa)
 const updatelocacoesPut = (req, res) => {
-  const { id } = req.params;
-  const { livro_id, cliente_id, data_locação, data_devolução } = req.body;
+  const{id} = req.params;
+  const {nome_livro, nome_cliente, data_locação, data_devolução} = req.body;
   db.query(
-  'UPDATE locações SET livro_id=?, cliente_id=?, data_locação=?, data_devolução=?',
-  [livro_id, cliente_id, data_locação, data_devolução],
+  'UPDATE locações SET nome_livro=?, nome_cliente=?, data_locação=?, data_devolução=? WHERE id=?',
+    [nome_livro, nome_cliente, data_locação, data_devolução, id],
+  (err, results) => {
+      if(err) {
+          console.error('Erro ao adicionar locação', err);
+          res.status(500).send('Erro ao adicionar locação');
+       return;
+      }
+  
+     
+      // verifica se nenhuma linha foi afetada pela consulta
+      if(results.affectedRows===0){
+        res.status(404).send('Locação não encontrada');
+        return;
+      }
+  
+  
+   res.send('Locação atualizada com sucesso');
+  }
+  );
+  };
+  
+
+
+
+// Função para atualizar uma transação existente (atualização parcial)
+const updatelocacoesPatch = (req, res) => {
+  const { id } = req.params;
+  const fields = req.body;
+  const query = [];
+  const values = [];
+  for (const [key, value] of Object.entries(fields)) {
+  query.push(`${key} = ?`);
+  values.push(value);
+  }
+  values.push(id);
+  db.query(
+  `UPDATE locações SET ${query.join(', ')} WHERE id = ?`,
+  values,
   (err, results) => {
   if (err) {
-  console.error('Erro ao atualizar locações:', err);
-  res.status(500).send('Erro ao atualizar locações');
+  console.error('Erro ao atualizar locação:', err);
+  res.status(500).send('Erro ao atualizar locação');
   return;
   }
-  res.send('locações atualizada com sucesso !!');
+  res.send('locação atualizada com sucesso');
   }
   );
   };
 
+  //Função para deletar uma transação existente
+
+const deletelocacoes = (req,res) => {
+  const{id} = req.params;
+  db.query('DELETE FROM locações WHERE id = ?', [id],
+  (err, results) => {
+    if(err) {
+        console.error('Erro deletar locações', err);
+        res.status(500).send('Erro ao deletar locações');
+     return;
+    }
 
 
+    //verifca se nenhuma linha foi afetada pela consulta
+    if(results.affectedRows===0){
+      res.status(404).send('Locação não encontrada');
+      return;
+    }
 
+
+    res.send('Locação Deletada com sucesso');
+}
+);
+};
 
 module.exports = {
     getAllLocacoes,
     addLocacoes,
-    updatelocacoesPut
+    updatelocacoesPut,
+    updatelocacoesPatch,
+    deletelocacoes
 
     };
