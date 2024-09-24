@@ -13,21 +13,20 @@ const bodyParser = require('body-parser'); // Importa o pacote body-parser para 
 const db = require('./config/db');
 
 const locacoesRoutes = require('./routes/locacoes');
-//inicializar nova aplicação Express
+const authRoutes = require('./routes/auth'); // Importa as rotas de autenticação
 
+//inicializar nova aplicação Express
 const app = express(); // Inicializa uma nova aplicação Express
 
-
 //configurar o CORS e o bady-Parse
-
 app.use(cors()); // Habilita o CORS para todas as rotas
 app.use(bodyParser.json()); // Configura o body-parser para analisar requisições JSON
 
-app.use('/locacaodelivros/locacoes', locacoesRoutes);
+app.use('/locacaodelivros/locacoes', locacoesRoutes);// Configura o servidor para usar as rotas de transações
+app.use('/locacoesdelivros/auth', authRoutes); // Configura o servidor para usar as rotas de autenticação
 
 
 //Rota inicial para testar o servidor
-
 app.get('/', (req, res) => {
     res.send(`Servidor está rodando na porta ${PORT}`); // Define uma rota inicial para testar o servidor
   });

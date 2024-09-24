@@ -12,9 +12,32 @@ const getAllLocacoes = (req, res) => {
   });
 };
 
-// Função para adicionar uma nova transação
+
+//-------------------------- com verificação de duplicidade------------------------------------------------------------------//
+
+// Função para adicionar uma nova locação
 const addLocacoes = (req, res) => {
   const { nome_livro, nome_cliente, data_locação, data_devolução} = req.body;
+
+// Verificar se a locação já existe
+db.query(
+  'SELECT * FROM locações WHERE nome_livro = ? AND nome_cliente = ? AND data_locação = ? AND data_devolução = ? ',
+  [nome_livro, nome_cliente, data_locação, data_devolução],
+  (err, results) => {
+  if (err) {
+  console.error('Erro ao verificar locação:', err);
+  res.status(500).send('Erro ao verificar locação');
+  return;
+  }
+  if (results.length > 0) {
+  // Se a locação já existe
+  res.status(400).send('Locação duplicada');
+  return;
+  }
+
+
+
+//se a locação não existe, insira-a no banco de dados 
   db.query(
   'INSERT INTO locações (nome_livro, nome_cliente, data_locação, data_devolução) VALUES (?,?,?,?)',
   [nome_livro, nome_cliente, data_locação, data_devolução],
@@ -26,8 +49,11 @@ const addLocacoes = (req, res) => {
   }
   res.status(201).send('locação adicionada com sucesso !!');
   }
-  );
-  };
+
+   );
+  }  
+);          
+};
 
 
 
@@ -40,13 +66,12 @@ const updatelocacoesPut = (req, res) => {
     [nome_livro, nome_cliente, data_locação, data_devolução, id],
   (err, results) => {
       if(err) {
-          console.error('Erro ao adicionar locação', err);
-          res.status(500).send('Erro ao adicionar locação');
+          console.error('Erro ao atualizar locação', err);
+          res.status(500).send('Erro ao atualizar locação');
        return;
       }
   
      
-      // verifica se nenhuma linha foi afetada pela consulta
       if(results.affectedRows===0){
         res.status(404).send('Locação não encontrada');
         return;
@@ -61,17 +86,21 @@ const updatelocacoesPut = (req, res) => {
 
 
 
-// Função para atualizar uma transação existente (atualização parcial)
+// Função para atualizar uma locação existente (atualização parcial)
 const updatelocacoesPatch = (req, res) => {
   const { id } = req.params;
   const fields = req.body;
   const query = [];
   const values = [];
+
   for (const [key, value] of Object.entries(fields)) {
   query.push(`${key} = ?`);
   values.push(value);
   }
+
   values.push(id);
+
+
   db.query(
   `UPDATE locações SET ${query.join(', ')} WHERE id = ?`,
   values,
@@ -81,12 +110,18 @@ const updatelocacoesPatch = (req, res) => {
   res.status(500).send('Erro ao atualizar locação');
   return;
   }
+
+  if (results.affectedRows === 0) {
+    res.status(404).send('locação não encontrada');
+    return;
+  }
+
   res.send('locação atualizada com sucesso');
   }
   );
   };
 
-  //Função para deletar uma transação existente
+  //Função para deletar uma locação existente
 
 const deletelocacoes = (req,res) => {
   const{id} = req.params;
@@ -99,7 +134,6 @@ const deletelocacoes = (req,res) => {
     }
 
 
-    //verifca se nenhuma linha foi afetada pela consulta
     if(results.affectedRows===0){
       res.status(404).send('Locação não encontrada');
       return;
@@ -107,8 +141,7 @@ const deletelocacoes = (req,res) => {
 
 
     res.send('Locação Deletada com sucesso');
-}
-);
+});
 };
 
 module.exports = {
