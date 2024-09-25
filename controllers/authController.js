@@ -32,6 +32,7 @@ res.status(500).send('Erro ao registrar usuário');
 // Função para autenticar um usuário
 const loginUser = async (req, res) => {
 const { email, password } = req.body; // Desestrutura os dados do corpo da requisição
+
 // Verificar se o usuário existe no banco de dados
 try {
 const [user] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
