@@ -6,7 +6,7 @@ const authController = require('../controllers/authController'); // Importa o co
 router.post('/register', authController.registerUser);
 
 // Rota para login de usuário
-// router.post('/login', authController.loginUser);
+router.post('/login', authController.loginUser);
 
 
 
