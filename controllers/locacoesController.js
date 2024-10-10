@@ -63,7 +63,8 @@ const updatelocacoesPut = (req, res) => {
   const {nome_livro, nome_cliente, data_locação, data_devolução} = req.body;
   db.query(
   'UPDATE locações SET nome_livro=?, nome_cliente=?, data_locação=?, data_devolução=? WHERE id=?',
-    [nome_livro, nome_cliente, data_locação, data_devolução, id],
+    
+   [nome_livro, nome_cliente, data_locação, data_devolução, id],
   (err, results) => {
       if(err) {
           console.error('Erro ao atualizar locação', err);
