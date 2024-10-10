@@ -1,6 +1,6 @@
 const db = require('../config/db'); // Importa a conexão com o banco de dados
 
-// Função para obter todas as transações
+// Função para obter todas as locações
 const getAllLocacoes = (req, res) => {
   db.query('SELECT * FROM locações', (err, results) => {
     if (err) {
