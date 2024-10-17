@@ -6,7 +6,7 @@ const sendEmail = require('../services/emailService').sendEmail; // Importa a fu
 
 // Função para registrar um novo usuário
 const registerUser = async (req, res) => {
-  const { nome, data_nascimento, telefone, email, password} = req.body; // Desestrutura os dados do corpo da requisição
+  const { nome, telefone, email, senha} = req.body; // Desestrutura os dados do corpo da requisição
 
  // Verificar se o usuário já existe no banco de dados
   try {
@@ -16,12 +16,12 @@ const registerUser = async (req, res) => {
     }
 
     // Criptografar a senha usando bcrypt
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(senha, 10);
 
     // Inserir o novo usuário no banco de dados
     await db.promise().query(
-      'INSERT INTO users (nome, data_nascimento, telefone, email, password) VALUES (?, ?, ?, ?)',
-      [nome, data_nascimento, telefone, email, hashedPassword]
+      'INSERT INTO users (nome, telefone, email, senha) VALUES (?, ?, ?, ?)',
+      [nome, telefone, email, hashedPassword]
     );
 
     res.status(201).send('Usuário registrado com sucesso');
@@ -33,7 +33,7 @@ const registerUser = async (req, res) => {
 
 // Função para autenticar um usuário
 const loginUser = async (req, res) => {
-  const { email, password } = req.body; // Desestrutura os dados do corpo da requisição
+  const { email, senha } = req.body; // Desestrutura os dados do corpo da requisição
 
  // Verificar se o usuário existe no banco de dados
 
@@ -98,7 +98,7 @@ const requestPasswordReset = async (req, res) => {
   
       const hashedPassword = await bcrypt.hash(newPassword, 10); // Criptografa a nova senha
   
-      await db.promise().query('UPDATE users SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [hashedPassword, user[0].id]);
+      await db.promise().query('UPDATE users SET senha = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [hashedPassword, user[0].id]);
   
       res.send('Senha redefinida com sucesso');
     } catch (err) {

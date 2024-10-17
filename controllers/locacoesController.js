@@ -17,12 +17,12 @@ const getAllLocacoes = (req, res) => {
 
 // Função para adicionar uma nova locação
 const addLocacoes = (req, res) => {
-  const { nome_livro, nome_cliente, data_locação, data_devolução} = req.body;
+  const { id_usuario, id_livro, data_locação, data_devolução, status} = req.body;
 
 // Verificar se a locação já existe
 db.query(
-  'SELECT * FROM locações WHERE nome_livro = ? AND nome_cliente = ? AND data_locação = ? AND data_devolução = ? ',
-  [nome_livro, nome_cliente, data_locação, data_devolução],
+  'SELECT * FROM locações WHERE id_usuario= ? AND id_livro = ? AND data_locação = ? AND data_devolução = ? AND status = ? ',
+  [id_usuario, id_livro, data_locação, data_devolução, status ],
   (err, results) => {
   if (err) {
   console.error('Erro ao verificar locação:', err);
@@ -39,8 +39,8 @@ db.query(
 
 //se a locação não existe, insira-a no banco de dados 
   db.query(
-  'INSERT INTO locações (nome_livro, nome_cliente, data_locação, data_devolução) VALUES (?,?,?,?)',
-  [nome_livro, nome_cliente, data_locação, data_devolução],
+  'INSERT INTO locações (id_usuario, id_livro, data_locação, data_devolução, status) VALUES (?,?,?,?,?)',
+  [id_usuario, id_livro, data_locação, data_devolução, status],
   (err, results) => {
   if (err) {
   console.error('Erro ao adicionar locações:', err);
@@ -60,11 +60,11 @@ db.query(
 //Função para atualizar uma transação existente (substituição completa)
 const updatelocacoesPut = (req, res) => {
   const{id} = req.params;
-  const {nome_livro, nome_cliente, data_locação, data_devolução} = req.body;
+  const {id_usuario, id_livro, data_locação, data_devolução, status} = req.body;
   db.query(
-  'UPDATE locações SET nome_livro=?, nome_cliente=?, data_locação=?, data_devolução=? WHERE id=?',
+  'UPDATE locações SET id_usuario=?, id_livro=?, data_locação=?, data_devolução=?, status=? WHERE id=?',
     
-   [nome_livro, nome_cliente, data_locação, data_devolução, id],
+   [id_usuario, id_livro, data_locação, data_devolução, status, id],
   (err, results) => {
       if(err) {
           console.error('Erro ao atualizar locação', err);
