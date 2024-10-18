@@ -44,7 +44,7 @@ const loginUser = async (req, res) => {
     }
 
     // Comparar a senha fornecida com a senha criptografada no banco de dados
-    const isMatch = await bcrypt.compare(password, user[0].password);
+    const isMatch = await bcrypt.compare(senha, user[0].senha);
     if (!isMatch) {
       return res.status(400).send('Credenciais inválidas');
     }
