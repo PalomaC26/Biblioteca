@@ -38,19 +38,19 @@ const loginUser = async (req, res) => {
  // Verificar se o usuário existe no banco de dados
 
   try {
-    const [user] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
-    if (user.length === 0) {
+    const [users] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
+    if (users.length === 0) {
       return res.status(400).send('Credenciais inválidas');
     }
 
     // Comparar a senha fornecida com a senha criptografada no banco de dados
-    const isMatch = await bcrypt.compare(senha, user[0].senha);
+    const isMatch = await bcrypt.compare(senha, users[0].senha);
     if (!isMatch) {
       return res.status(400).send('Credenciais inválidas');
     }
 
     // Gerar um token JWT
-    const token = jwt.sign({ userId: user[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: users[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.json({ token });
   } catch (err) {
@@ -64,9 +64,9 @@ const requestPasswordReset = async (req, res) => {
     const { email } = req.body;
   
     try {
-      const [user] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
+      const [users] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
   
-      if (user.length === 0) {
+      if (users.length === 0) {
         return res.status(404).send('Usuário não encontrado');
       }
   
@@ -90,15 +90,15 @@ const requestPasswordReset = async (req, res) => {
     const { token, newPassword } = req.body;
   
     try {
-      const [user] = await db.promise().query('SELECT * FROM users WHERE reset_password_token = ? AND reset_password_expires > NOW()', [token]);
+      const [users] = await db.promise().query('SELECT * FROM users WHERE reset_password_token = ? AND reset_password_expires > NOW()', [token]);
   
-      if (user.length === 0) {
+      if (users.length === 0) {
         return res.status(400).send('Token inválido ou expirado');
       }
   
       const hashedPassword = await bcrypt.hash(newPassword, 10); // Criptografa a nova senha
   
-      await db.promise().query('UPDATE users SET senha = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [hashedPassword, user[0].id]);
+      await db.promise().query('UPDATE users SET senha = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [hashedPassword, users[0].id]);
   
       res.send('Senha redefinida com sucesso');
     } catch (err) {
