@@ -57,7 +57,7 @@ db.query(
 
 
 
-//Função para atualizar uma transação existente (substituição completa)
+//Função para atualizar uma locação existente (substituição completa)
 const updatelocacoesPut = (req, res) => {
   const{id} = req.params;
   const {id_usuario, id_livro, data_locação, data_devolução, status} = req.body;
