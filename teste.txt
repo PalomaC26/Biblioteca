@@ -1,0 +1,59 @@
+CREATE DATABASE biblioteca_db;
+
+USE biblioteca_db;
+
+CREATE TABLE users (
+id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+nome VARCHAR (100),
+telefone VARCHAR (15),
+email VARCHAR (255),
+senha VARCHAR(100)
+);
+
+INSERT INTO users (nome, telefone, email, senha ) VALUES
+("Ana Maria", "8691234790",  "anamaria@gmail.com",  "ana123"),
+("João Lima", "1234790086",  "joãolima@gmail.com",  "joao56"),
+("Karina Silva", "97698674837", "karinasilva@gmail.com", "ka20");
+
+INSERT INTO users (nome, email) VALUES
+("Paloma Carvalho", "palomacarvalho@gmail.com"),
+("Veronica Nascimento", "veronicanascimento.com");
+
+
+
+CREATE TABLE livros (
+id_livro INT AUTO_INCREMENT PRIMARY KEY,
+titulo VARCHAR (255),
+autor VARCHAR (255),
+isbn VARCHAR(100),
+categoria VARCHAR(100)
+);
+INSERT INTO livros (titulo, autor, isbn, categoria) VALUES
+("A Hipótese do Amor", "Ali Halzewood", '20240101', "Comédia Romantica"),
+("O Fabricante de Lágrimas", "Erim Doom", '20240102', "Dark Romance"),
+("A Guerra dos Tronos", "George M. Martin", '20240103', "Fantasia"),
+("Princesa das Cinzas","Laura Sebastian", '20240104', "Fantasia");
+
+
+CREATE TABLE Locações (
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    ID_Livro INT,
+    ID_Usuário INT,
+    Data_Locação DATE,
+    Data_Devolução DATE,
+    Status VARCHAR(20) 
+    );
+
+INSERT INTO locações (ID_Livro , ID_Usuário , Data_Locação, Data_Devolução, Status) VALUES
+(2, 1, '2024-10-20', '2024-11-05', 'concluído'),  
+(3, 3, '2024-10-21', '2024-11-06', 'concluído'),  
+(1, 2, '2024-10-22', '2024-11-07', 'ativo');
+
+
+ALTER TABLE users 
+ADD COLUMN reset_password_token VARCHAR(255) NULL, 
+ADD COLUMN reset_password_expires DATETIME NULL;
+
+
+
+
